@@ -1,0 +1,152 @@
+<!doctype HTML>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <meta name="author" content="Jeppe Bundsgaard">
+    <title>Freetext Input Cleaning</title>
+    <link rel="stylesheet" href="clean-style.css" />
+    <link rel="stylesheet" href="../css/bootstrap.min.css">
+    <link rel="stylesheet" href="../css/jquery-ui.min.css">
+    <link rel="stylesheet" href="../css/fontawesome.min.css">
+	
+    <script src="../js/papaparse.min.js"></script>
+	<script src="../js/jquery.min.js"></script>
+    <script src="cleanResponses.js"></script>
+	<script src="../js/bootstrap.min.js"></script>
+	<script src="../js/jquery-ui.min.js"></script>
+  </head>
+
+<body>
+	<div class="container">
+		<div class="row">
+			<div class="col">
+				<button id="savedata" class="btn btn-success float-right" data-toggle="modal" data-target="#savemodal">Save</button>
+				<h1>Freetext Input Cleaning</h1>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col">
+				<div class="header" data-toggle="collapse" data-target="#instructions">
+					<h2>Instructions</h2>
+				</div>
+				<div class="collapse" id="instructions">
+				<h3>Load Data</h3>
+					<dl>
+						<dt>Load CSV</dt>
+							<dd>Select a comma separated file (the format is automatically determined). First row in the data needs to be a header row.</dd>
+							<dd>Click on one or more columns to clean.</dd>
+							<dt>Get coded data (JSON)</dt>
+							<dd>If you have saved a JSON-file with your codes, you can reload it by uploading the file.</dd>
+						<dt>Select columns</dt>
+						<dd>Click on one or more columns to clean the data in them.</dd>
+						<dt>Collapse data-area</dt>
+						<dd>When you have selected the columns, click on the header ("Load Data") to collapse it.</dd>
+					</dl>
+					<h3>Coding</h3>
+					<dl>
+						<dt>Double click</dt>
+						<dd>Double clicking on a word creates a new category named after that word.</dd>
+						<dt>Edit spelling</dt>
+						<dd>The categories can be edited by clicking on them.</dd>
+						<dt>Drag and drop</dt>
+						<dd>Drag words to the category they belong to.</dd>
+						<dd>Or drag words to New category to create a new category (same as double clicking).</dd>
+						<dt>Sort words</dt>
+						<dd>Click on the sort buttons to sort the words numerically or alphabetically.</dd>
+						<dt>Autosave</dt>
+						<dd>The current state of coding is automatically saved, so when you come back after having closed the browser, the data is still there.</dd>
+					</dl>
+					<h3>Save data</h3>
+					<dl>
+						<dt>Save as JSON</dt>
+						<dd>A JSON file keeps information of the categories and categorization. Save as JSON to share categorization, or to be able to get back to a previous version.</dd>
+						<dt>Save as CSV</dt>
+						<dd>Choose between saving only the edited columns or all columns in the dataset.</dd>
+						<dd>Choose between keeping the original columns (creating a new column for the edited data) or overwriting the data with the edited columns.</dd>
+					</dl>
+				</div>
+				<div class="header" data-toggle="collapse" data-target="#data">
+					<h2>Get Data</h2>
+				</div>
+				<div class="collapse show" id="data">
+					<label>CSV Data</label>
+					<input type="file" id="csvUpload">
+					<br>
+					<label>Coded data (JSON)</label>
+					<input type="file" id="jsonUpload">
+					<h3>Select column(s) to clean</h3>
+					<div id="collist">
+					</div>
+				</div>
+				<div class="header" data-toggle="collapse" data-target="#categorylist">
+				<h2>Categories</h2>
+				</div>
+				<div id="categorylist" class="collapse show scroller">
+					<dl id="categories"></dl>
+				</div>
+				<div class="header" data-toggle="collapse" data-target="#wordlist">
+				<h2>Words</h2>
+				</div>
+				<div id="wordlist" class="collapse show">
+					<div class="float-right">
+						<button data-sorttype="num" data-sortdirection="-1" class="sort btn btn-bw">Sort numerically</button>
+						<button data-sorttype="alpha" data-sortdirection="1" class="sort btn btn-bw">Sort alphabetically</button>
+					</div>
+					<div class="scroller">
+						<dl class="collapse show" id="words"></dl>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="modal fade" id="savemodal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" >Save edited data</h5>
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+				<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			<div class="modal-body">
+				<div class="form-group">
+					<h3>File type</h3>
+					<div class="form-check form-check-inline">
+						<input class="form-check-input" type="radio" id="savecsv" checked="checked" name="filetype" value="csv">
+						<label class="form-check-label" for="savecsv">CSV</label>
+					</div>
+					<div class="form-check form-check-inline">
+						<input class="form-check-input" type="radio" id="savejson" name="filetype" value="json">
+						<label class="form-check-label" for="savejson">JSON (can be loaded back into this system)</label>
+					</div>
+				</div>
+				<div class="form-group">
+					<h3>CSV-settings</h3>
+					<div class="form-check form-check-inline">
+						<input class="form-check-input" type="radio" id="fulldataset" checked="checked" name="extent" value="full">
+						<label class="form-check-label" for="fulldataset">Full dataset</label>
+					</div>
+					<div class="form-check form-check-inline">
+						<input class="form-check-input" type="radio" id="onlyedited" name="extent" value="part">
+						<label class="form-check-label" for="onlyedited">Only edited columns</label>
+					</div>
+					<br>
+					<div class="form-check form-check-inline">
+						<input class="form-check-input" type="radio" id="keep" checked="checked" name="keepcols" value="keep">
+						<label class="form-check-label" for="keep">Keep original columns</label>
+					</div>
+					<div class="form-check form-check-inline">
+						<input class="form-check-input" type="radio" id="replace" name="keepcols" value="replace">
+						<label class="form-check-label" for="replace">Replace data in edited columns</label>
+					</div>
+				</div>		
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+				<button type="button" class="btn btn-primary" id="dosave">Save</button>
+			</div>
+			</div>
+		</div>
+	</div>
+</body>
+</html>

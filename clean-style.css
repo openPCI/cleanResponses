@@ -1,0 +1,37 @@
+.colname { 
+	margin: 5px 5px 5px 0; 
+	padding: 3px;  
+	text-align: center; 
+	border-style:solid;
+	border-width:1px;
+	border-color:#CCC;
+}
+.selectedcol {
+	background-color:#28a745;
+	color:white;
+}
+.placeholder {
+	width:100px;
+	height:20px;
+	background-color:#f8f9fa;
+	border-style:solid;
+	border-width:1px;
+	border-color:#CCC;
+}
+dd {
+	padding-left:15px;
+}
+.scroller {
+	max-height:600px;
+	overflow:scroll;
+	resize:vertical;
+}
+.header {
+	height:40px;
+	padding: 0px 15px 4px 15px;
+	margin: 20px 0px 20px 0px ;
+	background-color:#f8f9fa;
+	border-style:solid;
+	border-width:1px;
+	border-color:#CCC;
+}
